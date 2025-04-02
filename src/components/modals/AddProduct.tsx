@@ -1,4 +1,4 @@
-import { Form, Input, Modal } from "antd";
+import { Form, Input, Modal, Radio } from "antd";
 import { useForm, useWatch } from "antd/es/form/Form";
 import React, { useState } from "react";
 import { SuccessModal } from "../noti/SuccessModal";
@@ -18,14 +18,13 @@ type FieldCateType = {
     description: string;
     image: string;
     price: number;
-    is_available: number;
+    is_available: boolean;
     points_earned: number;
 };
 
 export const AddProduct: React.FC<AddProductProp> = ({ open, onCancel }) => {
     const [form] = useForm<FieldCateType>();
     const [modalSuccessAdd, setModalSuccessAdd] = useState<boolean>(false);
-
     const [ModalError, setModalError] = useState<boolean>(false)
     const [messageError, setMessageError] = useState<string>('')
 
@@ -55,9 +54,9 @@ export const AddProduct: React.FC<AddProductProp> = ({ open, onCancel }) => {
     };
 
     const name = useWatch('name', form);
-    const qty = useWatch('is_available', form) || 0;
     const price = useWatch('price', form) || 0;
-    const totalPrice = qty * price;
+    const isActive = useWatch('is_available', form)
+    const point = useWatch('points_earned', form)
     const [cateName, setCateName] = useState<string>('-')
 
     return (
@@ -81,7 +80,7 @@ export const AddProduct: React.FC<AddProductProp> = ({ open, onCancel }) => {
                     layout="vertical"
                 >
                     <div className="grid grid-cols-2 gap-10">
-                        <div className="grid grid-cols-2 gap-5">
+                        <div className="grid border p-3 rounded-[11px] grid-cols-2 gap-5">
 
                             <Form.Item<FieldCateType>
                                 name="name"
@@ -98,13 +97,7 @@ export const AddProduct: React.FC<AddProductProp> = ({ open, onCancel }) => {
                                 <Input onChange={(e) => form.setFieldValue("description", e.target.value)} />
                             </Form.Item>
 
-                            <Form.Item<FieldCateType>
-                                name="is_available"
-                                label="Qty"
-                                rules={[{ required: true, message: "Please input Qty!" }]}
-                            >
-                                <Input type="number" onChange={(e) => form.setFieldValue("is_available", Number(e.target.value))} />
-                            </Form.Item>
+
 
                             <Form.Item<FieldCateType>
                                 name="price"
@@ -125,6 +118,27 @@ export const AddProduct: React.FC<AddProductProp> = ({ open, onCancel }) => {
                                 }} />
                             </Form.Item>
 
+                            <div className="pb-4 flex flex-col gap-2">
+                                <p>Is available ?</p>
+                                <Form.Item
+                                name="is_available"
+                                initialValue={true}
+                                >
+                                    <Radio.Group buttonStyle="solid" defaultValue={true} >
+                                        <Radio.Button value={true}>Enable</Radio.Button>
+                                        <Radio.Button className="text-red-500" value={false}>Disable</Radio.Button>
+                                    </Radio.Group>
+                                </Form.Item>
+                            </div>
+
+                            <Form.Item
+                            label='Point / Order'
+                            initialValue={0}
+                            name="points_earned"
+                            >
+                                <Input type="number" onChange={(e) => Number(e.target.value)}></Input>
+                            </Form.Item>
+
                             <Form.Item<FieldCateType>
                                 name="image"
                                 label="Image"
@@ -134,24 +148,25 @@ export const AddProduct: React.FC<AddProductProp> = ({ open, onCancel }) => {
                             </Form.Item>
                         </div>
 
-                        <div className="grid border">
+                        <div className="grid border rounded-[11px]">
                             <p className="col-span-2 text-[24px] text-center flex flex-col justify-end font-semibold underline">Product Detail:</p>
                             <div className="col-span-2 grid grid-cols-2 border m-3 rounded-[8px] items-center">
                                 <span className="flex flex-col justify-start text-[18px] font-semibold items-end pr-10">
+                                    
                                     <li>Product name :</li>
                                     <li>Category name :</li>
-                                    <li>Qty :</li>
+                                    <li>Active :</li>
                                     <li>Price :</li>
-                                    <li>Total Price( Qty * Price ) :</li>
+                                    <li>Point per Order :</li>
 
                                 </span>
                                 <span className="flex flex-col justify-start text-[18px] items-start pl-10">
-
+                                    
                                     <li>{name || '-'}</li>
                                     <li>{cateName || '-'}</li>
-                                    <li><FormatNumber value={qty} /></li>
+                                    <li>{isActive ? 'Yes' : 'No'}</li>
                                     <li><FormatNumber value={price} /></li>
-                                    <li><FormatNumber value={totalPrice} /></li>
+                                    <li><FormatNumber value={point}/></li>
 
                                 </span>
                             </div>

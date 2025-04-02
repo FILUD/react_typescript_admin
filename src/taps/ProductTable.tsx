@@ -36,7 +36,7 @@ export const ProductTable: React.FC<ProductTableProop> = ({ totalProduct, reload
 
     useEffect(() => {
         getAllProducts();
-    }, [reloadData, onSuccess, successDelete])
+    }, [reloadData, onSuccess, successDelete, modalEditPro])
 
 
     const columns: TableColumnsType<any> = [
@@ -61,16 +61,15 @@ export const ProductTable: React.FC<ProductTableProop> = ({ totalProduct, reload
             },
         },
         {
-            title: 'Qty',
+            title: 'Active',
             dataIndex: 'is_available',
-            sorter: {
-                compare: (a, b) => a.english - b.english,
-                multiple: 1,
-            },
+            render: (value: boolean) => (
+                <p className={`${!value && 'text-red-500'}`}>{value ? 'Enable' : 'Disable'}</p>
+            )
         },
         {
             title: 'Points Earned',
-            dataIndex: 'is_available',
+            dataIndex: 'points_earned',
             sorter: {
                 compare: (a, b) => a.english - b.english,
                 multiple: 1,
@@ -131,10 +130,6 @@ export const ProductTable: React.FC<ProductTableProop> = ({ totalProduct, reload
                 rowKey='product_id'
                 columns={columns}
                 dataSource={productData}
-                onRow={(record) => ({
-                    onDoubleClick: () => handleRowClick(record),
-                    style: { cursor: 'pointer' }
-                })}
                 onChange={onChange} />
         </div>
     )

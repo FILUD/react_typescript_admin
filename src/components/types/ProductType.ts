@@ -14,7 +14,7 @@ export interface ProductType {
     description: string,
     price: string,
     image: string,
-    is_available: number,
+    is_available: boolean,
     created_at: string,
     updated_at: string,
     points_earned: number,

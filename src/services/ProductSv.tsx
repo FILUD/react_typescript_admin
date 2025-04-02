@@ -16,7 +16,7 @@ export const createProduct = async (payload: {
     description: string,
     price: number,
     image: string,
-    is_available: number,
+    is_available: boolean,
     points_earned: number
 }) => {
     console.log("Final payload:", payload);
@@ -46,3 +46,21 @@ export const getProductByID = async (product_id: number) => {
         throw error;
     }
 }
+
+
+export const editProduct = async (product_id: number ,payload: {
+    category_id: number,
+    name: string,
+    description: string,
+    price: number,
+    image: string,
+    is_available: boolean,
+    points_earned: number
+}) => {
+    try {
+        const response = await API.put(`/api/edit/product/${product_id}`, payload);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+} 
